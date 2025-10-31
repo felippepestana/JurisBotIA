@@ -13,8 +13,11 @@ from app.models.schemas import (
 )
 from app.core.mock_data import search_mock_documents
 from app.core.config import settings
+from app.services.openai_service import openai_service
+import logging
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 def generate_mock_legal_response(query: str, documents: list) -> str:
@@ -130,16 +133,23 @@ async def legal_chat(message: ChatMessage):
         )
 
     # Gerar resposta
-    if settings.DEV_MOCK_AI or not settings.OPENAI_API_KEY:
-        # Modo mock (desenvolvimento)
+    if settings.DEV_MOCK_AI or not openai_service.is_available():
+        # Modo mock (desenvolvimento ou sem API key)
+        logger.info("Usando resposta mockada (OpenAI não disponível)")
         ai_response = generate_mock_legal_response(message.message, documents)
         confidence = 0.85
     else:
-        # TODO: Implementar chamada real ao OpenAI quando tiver a chave configurada
-        # from app.services.openai_service import generate_legal_response
-        # ai_response, confidence = generate_legal_response(message.message, documents)
-        ai_response = generate_mock_legal_response(message.message, documents)
-        confidence = 0.85
+        # Usar OpenAI real
+        try:
+            logger.info("Gerando resposta com OpenAI API")
+            ai_response, confidence = openai_service.generate_legal_response(
+                query=message.message,
+                documents=documents
+            )
+        except Exception as e:
+            logger.error(f"Erro ao usar OpenAI, fallback para mock: {e}")
+            ai_response = generate_mock_legal_response(message.message, documents)
+            confidence = 0.85
 
     # Preparar fontes
     sources = []

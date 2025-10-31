@@ -240,7 +240,7 @@ async def api_info():
 # IMPORT E REGISTER DE ROTAS
 # ============================================
 
-from app.api.v1 import search, chat
+from app.api.v1 import search, chat, documents, analyze
 
 app.include_router(
     search.router,
@@ -254,25 +254,25 @@ app.include_router(
     tags=["Chat"]
 )
 
-# TODO: Implementar routers adicionais
-# from app.api.v1 import auth, documents, analyze
+app.include_router(
+    documents.router,
+    prefix=f"{settings.API_PREFIX}/documents",
+    tags=["Documents"]
+)
+
+app.include_router(
+    analyze.router,
+    prefix=f"{settings.API_PREFIX}/analyze",
+    tags=["Analysis"]
+)
+
+# TODO: Implementar router de autenticação
+# from app.api.v1 import auth
 #
 # app.include_router(
 #     auth.router,
 #     prefix=f"{settings.API_PREFIX}/auth",
 #     tags=["Authentication"]
-# )
-#
-# app.include_router(
-#     documents.router,
-#     prefix=f"{settings.API_PREFIX}/documents",
-#     tags=["Documents"]
-# )
-#
-# app.include_router(
-#     analyze.router,
-#     prefix=f"{settings.API_PREFIX}/analyze",
-#     tags=["Analysis"]
 # )
 
 
