@@ -1,0 +1,161 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-playfair: 'Playfair Display', Georgia, serif;
+  --font-mono: 'Fira Code', Menlo, Monaco, monospace;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900 antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  h1 {
+    @apply text-4xl;
+  }
+
+  h2 {
+    @apply text-3xl;
+  }
+
+  h3 {
+    @apply text-2xl;
+  }
+
+  h4 {
+    @apply text-xl;
+  }
+
+  h5 {
+    @apply text-lg;
+  }
+
+  h6 {
+    @apply text-base;
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-padding {
+    @apply py-12 md:py-16 lg:py-20;
+  }
+
+  /* Scrollbar personalizado */
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full hover:bg-gray-400;
+  }
+
+  /* Animações customizadas */
+  .fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent;
+  }
+
+  /* Legal theme */
+  .legal-gradient {
+    @apply bg-gradient-to-br from-legal-dark-blue via-primary-700 to-legal-gold;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+}
+
+/* Markdown styles para conteúdo legal */
+.legal-content {
+  @apply prose prose-gray max-w-none;
+}
+
+.legal-content h1 {
+  @apply text-3xl font-bold mb-4 mt-8;
+}
+
+.legal-content h2 {
+  @apply text-2xl font-bold mb-3 mt-6;
+}
+
+.legal-content h3 {
+  @apply text-xl font-semibold mb-2 mt-4;
+}
+
+.legal-content p {
+  @apply mb-4 leading-relaxed;
+}
+
+.legal-content ul, .legal-content ol {
+  @apply mb-4 ml-6;
+}
+
+.legal-content li {
+  @apply mb-2;
+}
+
+.legal-content code {
+  @apply bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono;
+}
+
+.legal-content pre {
+  @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4;
+}
+
+.legal-content blockquote {
+  @apply border-l-4 border-primary-500 pl-4 italic my-4 text-gray-700;
+}
+
+.legal-content table {
+  @apply w-full mb-4 border-collapse;
+}
+
+.legal-content th {
+  @apply bg-gray-100 font-semibold p-2 border;
+}
+
+.legal-content td {
+  @apply p-2 border;
+}
+
+/* Highlight de busca */
+mark {
+  @apply bg-yellow-200 px-0.5 rounded;
+}
