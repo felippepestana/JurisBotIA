@@ -203,13 +203,53 @@ async def suggest_keywords(q: str = Query(..., min_length=2)):
     Returns:
         Lista de sugestões
     """
-    # Keywords pré-definidas para MVP
+    # Cache key para sugestões
+    cache_key = cache_service._generate_key("suggestions", q.lower())
+
+    # Verificar cache
+    if cache_service.is_available():
+        cached = cache_service.get(cache_key)
+        if cached:
+            logger.debug(f"Cache hit para suggestions: {q}")
+            return cached
+
+    # Keywords jurídicas pré-definidas (expandidas)
     all_keywords = [
-        "CDC", "instituições financeiras", "consumidor", "bancos",
-        "tarifa bancária", "venda casada", "superendividamento",
-        "dano moral", "responsabilidade civil", "boa-fé",
-        "código de defesa do consumidor", "direito bancário",
-        "súmula", "jurisprudência", "STJ", "STF", "TJSP"
+        # CDC e Consumidor
+        "CDC", "código de defesa do consumidor", "consumidor", "direito do consumidor",
+        "instituições financeiras", "bancos", "relação de consumo",
+
+        # Práticas bancárias
+        "tarifa bancária", "tarifa abusiva", "venda casada", "superendividamento",
+        "crédito consignado", "empréstimo", "juros abusivos",
+        "cobrança indevida", "dívida bancária",
+
+        # Danos e responsabilidade
+        "dano moral", "dano material", "responsabilidade civil", "indenização",
+        "reparação de danos", "danos morais e materiais",
+
+        # Princípios
+        "boa-fé", "boa-fé objetiva", "transparência", "informação adequada",
+
+        # Processuais
+        "petição inicial", "contestação", "recurso", "apelação",
+        "agravo de instrumento", "embargos de declaração",
+
+        # Fontes
+        "súmula", "jurisprudência", "acórdão", "decisão judicial",
+        "lei", "decreto", "medida provisória", "constituição",
+
+        # Tribunais
+        "STJ", "STF", "TJSP", "TJRJ", "TJMG", "TRF", "TST", "TRT",
+
+        # Outras áreas
+        "direito bancário", "direito civil", "direito do trabalho",
+        "direito processual civil", "direito tributário",
+
+        # Temas específicos
+        "prescrição", "decadência", "vício do produto", "vício do serviço",
+        "inversão do ônus da prova", "responsabilidade objetiva",
+        "CDC artigo 6º", "CDC artigo 42", "CDC artigo 51"
     ]
 
     q_lower = q.lower()
@@ -218,7 +258,19 @@ async def suggest_keywords(q: str = Query(..., min_length=2)):
         if q_lower in kw.lower()
     ]
 
-    return {
+    # Ordenar por relevância (exact match primeiro, depois por tamanho)
+    suggestions.sort(key=lambda x: (
+        not x.lower().startswith(q_lower),  # Começa com query primeiro
+        len(x)  # Depois por tamanho
+    ))
+
+    result = {
         "query": q,
         "suggestions": suggestions[:10]
     }
+
+    # Cachear resultado (sugestões mudam pouco)
+    if cache_service.is_available():
+        cache_service.set(cache_key, result, ttl=3600)  # 1 hora
+
+    return result

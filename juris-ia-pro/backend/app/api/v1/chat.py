@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException
 import time
 from datetime import datetime
 import uuid
+import hashlib
 
 from app.models.schemas import (
     ChatMessage,
@@ -14,6 +15,8 @@ from app.models.schemas import (
 from app.core.mock_data import search_mock_documents
 from app.core.config import settings
 from app.services.openai_service import openai_service
+from app.services.cache_service import cache_service
+from app.services.vector_service import vector_service
 import logging
 
 router = APIRouter()
@@ -120,8 +123,34 @@ async def legal_chat(message: ChatMessage):
             detail="Mensagem deve ter pelo menos 3 caracteres"
         )
 
-    # Buscar documentos relevantes
-    documents = search_mock_documents(message.message, limit=5)
+    # Gerar cache key baseado na mensagem
+    # Nota: não incluímos conversation_id no cache pois queremos reusar respostas para mesma pergunta
+    cache_key = cache_service._generate_key(
+        "chat",
+        message.message.lower().strip()
+    )
+
+    # Verificar cache
+    if cache_service.is_available():
+        cached_response = cache_service.get(cache_key)
+        if cached_response:
+            logger.info(f"Cache hit para chat: {message.message[:50]}")
+            # Atualizar conversation_id se fornecido
+            if message.conversation_id:
+                cached_response["conversation_id"] = message.conversation_id
+            return ChatResponse(**cached_response)
+
+    # Buscar documentos relevantes com vector search
+    if vector_service.is_available():
+        logger.info("Buscando documentos com vector search")
+        documents = vector_service.search(
+            query=message.message,
+            limit=5,
+            score_threshold=0.65  # Threshold mais baixo para chat (mais documentos)
+        )
+    else:
+        logger.info("Vector search indisponível, usando mock")
+        documents = search_mock_documents(message.message, limit=5)
 
     if not documents:
         return ChatResponse(
@@ -175,13 +204,28 @@ async def legal_chat(message: ChatMessage):
     # ID da conversa
     conversation_id = message.conversation_id or str(uuid.uuid4())
 
-    return ChatResponse(
+    # Criar resposta
+    response = ChatResponse(
         response=ai_response,
         sources=sources,
         confidence=confidence,
         conversation_id=conversation_id,
         processing_time_ms=processing_time_ms
     )
+
+    # Cachear resposta (se cache disponível e confiança boa)
+    if cache_service.is_available() and confidence >= 0.7:
+        try:
+            cache_service.set(
+                cache_key,
+                response.model_dump(),
+                ttl=600  # 10 minutos para chat (pode mudar mais que busca)
+            )
+            logger.debug(f"Resposta de chat cacheada: {message.message[:50]}")
+        except Exception as e:
+            logger.warning(f"Erro ao cachear resposta de chat: {e}")
+
+    return response
 
 
 @router.get("/history")

@@ -240,7 +240,7 @@ async def api_info():
 # IMPORT E REGISTER DE ROTAS
 # ============================================
 
-from app.api.v1 import search, chat, documents, analyze
+from app.api.v1 import search, chat, documents, analyze, stats
 
 app.include_router(
     search.router,
@@ -266,6 +266,12 @@ app.include_router(
     tags=["Analysis"]
 )
 
+app.include_router(
+    stats.router,
+    prefix=f"{settings.API_PREFIX}/stats",
+    tags=["Statistics"]
+)
+
 # TODO: Implementar router de autenticação
 # from app.api.v1 import auth
 #
@@ -274,27 +280,6 @@ app.include_router(
 #     prefix=f"{settings.API_PREFIX}/auth",
 #     tags=["Authentication"]
 # )
-
-
-# ============================================
-# ROTAS TEMPORÁRIAS PARA MVP
-# ============================================
-
-@app.get(f"{settings.API_PREFIX}/stats", tags=["Stats"])
-async def get_stats():
-    """
-    Estatísticas básicas do sistema.
-
-    Returns:
-        dict: Estatísticas do sistema
-    """
-    from app.core.mock_data import get_mock_stats
-
-    stats = get_mock_stats()
-    stats["version"] = settings.APP_VERSION
-    stats["last_update"] = "2024-01-15T00:00:00Z"
-
-    return stats
 
 
 # ============================================
