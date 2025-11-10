@@ -15,8 +15,12 @@ from app.models.schemas import (
 )
 from app.core.mock_data import search_mock_documents, get_mock_document_by_id
 from app.core.config import settings
+from app.services.vector_service import vector_service
+from app.services.cache_service import cache_service
+import logging
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.post("/", response_model=SearchResponse)
@@ -39,8 +43,41 @@ async def search_documents(request: SearchRequest):
             detail="Query deve ter pelo menos 3 caracteres"
         )
 
-    # Buscar documentos (usando mock por enquanto)
-    documents = search_mock_documents(request.query, limit=request.limit)
+    # Tentar buscar do cache primeiro
+    cache_key = cache_service._generate_key(
+        "search",
+        request.query,
+        request.limit,
+        request.tipo_documento,
+        request.instancia
+    )
+
+    cached_response = cache_service.get(cache_key)
+    if cached_response:
+        logger.info("✅ Retornando do cache")
+        return SearchResponse(**cached_response)
+
+    # Buscar documentos
+    # Tentar busca vetorial primeiro (se disponível)
+    if vector_service.is_available():
+        logger.info("🔍 Usando busca vetorial (Qdrant)")
+        filters_dict = {}
+        if request.tipo_documento:
+            filters_dict["tipo_documento"] = request.tipo_documento
+        if request.instancia:
+            filters_dict["instancia"] = request.instancia
+
+        documents = vector_service.search(
+            query=request.query,
+            limit=request.limit * 2,  # Buscar mais para aplicar outros filtros
+            filters=filters_dict,
+            score_threshold=settings.RAG_SIMILARITY_THRESHOLD
+        )
+        logger.info(f"Encontrados {len(documents)} via busca vetorial")
+    else:
+        # Fallback para busca mockada
+        logger.info("📚 Usando busca mockada (fallback)")
+        documents = search_mock_documents(request.query, limit=request.limit)
 
     # Aplicar filtros
     filtered_docs = documents
@@ -116,13 +153,18 @@ async def search_documents(request: SearchRequest):
             "fim": request.data_fim
         }
 
-    return SearchResponse(
+    response = SearchResponse(
         query=request.query,
         total=len(filtered_docs),
         results=results,
         time_ms=time_ms,
         filters_applied=filters_applied
     )
+
+    # Cachear resposta
+    cache_service.set(cache_key, response.model_dump(), ttl=settings.CACHE_TTL_SECONDS)
+
+    return response
 
 
 @router.get("/{document_id}")
