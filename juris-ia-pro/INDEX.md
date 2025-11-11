@@ -4,13 +4,22 @@
 
 ### Documentos Principais (Ordem Recomendada)
 
-1. **[FINAL_SUMMARY.md](./FINAL_SUMMARY.md)** ⭐ **COMECE AQUI**
+1. **[GUIA_PASSO_A_PASSO.md](./GUIA_PASSO_A_PASSO.md)** 🎯 **TUTORIAL COMPLETO**
+   - **Guia EXTREMAMENTE detalhado** para iniciantes
+   - Passo a passo com cada comando explicado
+   - Como acessar arquivos (GitHub e local)
+   - Como instalar e configurar tudo
+   - Como fazer deploy completo
+   - Solução de problemas comuns
+   - **RECOMENDADO se é sua primeira vez!**
+
+2. **[FINAL_SUMMARY.md](./FINAL_SUMMARY.md)** ⭐ **RESUMO EXECUTIVO**
    - Resumo executivo completo do projeto
    - Visão geral de tudo que foi desenvolvido
    - Estatísticas finais (9.300+ linhas de código)
    - Guia rápido de deployment
 
-2. **[README.md](./README.md)**
+3. **[README.md](./README.md)**
    - Visão geral do projeto
    - Quick start
    - Stack tecnológica
