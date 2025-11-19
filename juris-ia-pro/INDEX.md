@@ -2,18 +2,33 @@
 
 ## 🚀 Começar Aqui
 
-### Documentos Principais (Ordem Recomendada)
+### ⭐ ARQUIVOS ESSENCIAIS (Ordem Recomendada)
 
-1. **[GUIA_PASSO_A_PASSO.md](./GUIA_PASSO_A_PASSO.md)** 🎯 **TUTORIAL COMPLETO**
+1. **[START_HERE.md](./START_HERE.md)** 🎯 **COMECE AQUI!**
+   - **Ponto de entrada principal**
+   - Visão geral de tudo que está pronto
+   - Guia ultra-rápido de 3 passos
+   - Links para todos os recursos
+   - **RECOMENDADO para quem vai executar AGORA!**
+
+2. **[EXECUTE_AGORA.md](./EXECUTE_AGORA.md)** ⚡ **EXECUÇÃO RÁPIDA**
+   - **Guia de 3 passos simples**
+   - Tempo estimado: 3 minutos de configuração + 15-20 min de build
+   - Pré-requisitos explicados
+   - Comandos prontos para copiar
+   - Troubleshooting rápido
+   - **RECOMENDADO se você quer RESULTADOS RÁPIDOS!**
+
+3. **[GUIA_PASSO_A_PASSO.md](./GUIA_PASSO_A_PASSO.md)** 📖 **TUTORIAL COMPLETO**
    - **Guia EXTREMAMENTE detalhado** para iniciantes
    - Passo a passo com cada comando explicado
    - Como acessar arquivos (GitHub e local)
    - Como instalar e configurar tudo
    - Como fazer deploy completo
    - Solução de problemas comuns
-   - **RECOMENDADO se é sua primeira vez!**
+   - **RECOMENDADO se é sua PRIMEIRA VEZ!**
 
-2. **[FINAL_SUMMARY.md](./FINAL_SUMMARY.md)** ⭐ **RESUMO EXECUTIVO**
+4. **[FINAL_SUMMARY.md](./FINAL_SUMMARY.md)** ⭐ **RESUMO EXECUTIVO**
    - Resumo executivo completo do projeto
    - Visão geral de tudo que foi desenvolvido
    - Estatísticas finais (9.300+ linhas de código)
