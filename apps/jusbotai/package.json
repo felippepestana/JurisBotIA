@@ -1,0 +1,33 @@
+{
+  "name": "jusbotai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Ferramenta de Assistência a Advocacia",
+  "scripts": {
+    "build": "next build",
+    "clean": "rimraf node_modules .next",
+    "dev": "next dev --port 3005",
+    "lint": "eslint .",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.1.1",
+    "@supabase/supabase-js": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "clsx": "^2.1.1",
+    "date-fns": "^2.30.0",
+    "eslint-config-supabase": "workspace:*",
+    "lucide-react": "^0.511.0",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-hook-form": "^7.45.0",
+    "tailwind-merge": "^1.13.2",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:",
+    "zod": "catalog:"
+  }
+}
