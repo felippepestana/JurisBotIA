@@ -201,6 +201,16 @@
       ],
       "outputs": [".next/**", "!.next/cache/**", ".contentlayer/**"]
     },
+    "jusbotai#build": {
+      "dependsOn": ["^build"],
+      "env": [
+        "NEXT_PUBLIC_SUPABASE_URL",
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+        "NEXT_PUBLIC_APP_URL",
+        "NODE_ENV"
+      ],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
     "ui-library#build": {
       "dependsOn": ["^build"],
       "env": [
